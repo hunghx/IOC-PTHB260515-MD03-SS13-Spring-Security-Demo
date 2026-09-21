@@ -20,17 +20,17 @@ public class SpringSecurityApplication {
         return args -> {
 //            System.out.println("Encoded password for '123456':); " + passwordEncoder.encode("123456"));
 //            System.out.println("Encoded password for '123456$':); " + passwordEncoder.encode("123456$"));
-            User admin = new User();
-            admin.setUsername("admin123");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setRole("ADMIN");
-
-            userRepository.save(admin);
-            User user = new User();
-            user.setUsername("hunghx");
-            user.setPassword(passwordEncoder.encode("123456"));
-            user.setRole("USER");
-            userRepository.save(user);
+//            User admin = new User();
+//            admin.setUsername("admin123");
+//            admin.setPassword(passwordEncoder.encode("admin123"));
+//            admin.setRole("ADMIN");
+//
+//            userRepository.save(admin);
+//            User user = new User();
+//            user.setUsername("hunghx");
+//            user.setPassword(passwordEncoder.encode("123456"));
+//            user.setRole("USER");
+//            userRepository.save(user);
 
         };
     }
