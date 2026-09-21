@@ -1,4 +1,4 @@
-package ra.edu.config;
+package ra.edu.dto.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
