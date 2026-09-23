@@ -1,6 +1,7 @@
 package ra.edu.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,11 +15,13 @@ public class TestController {
     private final JwtService jwtService;
 
     @GetMapping("/admin/test") // quyền ADMIN
+    @PreAuthorize("hasRole('ADMIN')")
     public String testAdmin() {
         return "Hello, Admin!";
     }
 
     @GetMapping("/user/test")  // quyền USER|ADMIN
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public String testUser() {
         return "Hello, User!";
     }

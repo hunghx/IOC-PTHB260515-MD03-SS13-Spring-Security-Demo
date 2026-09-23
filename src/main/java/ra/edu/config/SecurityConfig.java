@@ -9,21 +9,20 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ra.edu.config.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity // bật các cấu hình mặc định cho bảo mật web
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     // Cơ chế mã hóa mật khẩu
@@ -58,8 +57,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 // phân quyền theo từng đường dẫn
                 .authorizeHttpRequests(reqMatcher ->
-                        reqMatcher.requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                        reqMatcher
+//                                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN") // tương đương hasRole("ADMIN")
+//                                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/api/public/**").permitAll() // công khai , không cần xác thực
                                 .requestMatchers("/api/auth/**").permitAll() // công khai , không cần xác thực
                                 .requestMatchers("/api/jwt/**").permitAll() // công khai , không cần xác thực
@@ -71,6 +71,7 @@ public class SecurityConfig {
                                 handler.authenticationEntryPoint(new AuthenticationExceptionHandler())
                                         .accessDeniedHandler(new AccessDeniedHandlers())
                 )
+                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults()); // xác thực bằng http basic
         return http.build();
