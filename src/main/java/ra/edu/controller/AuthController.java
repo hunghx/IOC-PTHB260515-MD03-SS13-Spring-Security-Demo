@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ra.edu.config.jwt.JwtService;
 import ra.edu.dto.request.FormLogin;
 import ra.edu.dto.request.FormRegister;
 import ra.edu.entity.User;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,8 +32,8 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-            String uuid = UUID.randomUUID().toString();
-            return "Login successful: " + uuid;
+//            String uuid = UUID.randomUUID().toString();
+            return jwtService.generateToken(request.getUsername());
         }catch (Exception e){
             return "Login failed: " + e.getMessage();
         }

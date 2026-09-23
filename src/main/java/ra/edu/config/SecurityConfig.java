@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ra.edu.config.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity // bật các cấu hình mặc định cho bảo mật web
@@ -45,6 +47,7 @@ public class SecurityConfig {
 //        return new InMemoryUserDetailsManager(admin, user);
 //    }
     private final UserDetailsServiceCustom userDetailsServiceCustom;
+    private final JwtAuthenticationFilter authenticationFilter;
 
     // Phân quyền các nguoi dùng theo đường dẫn
 
@@ -62,6 +65,13 @@ public class SecurityConfig {
                                 .requestMatchers("/api/jwt/**").permitAll() // công khai , không cần xác thực
                                 .anyRequest().authenticated() // cần phaải xác thực
                         )
+                // cấu hình xử lí exception
+                .exceptionHandling(
+                        handler ->
+                                handler.authenticationEntryPoint(new AuthenticationExceptionHandler())
+                                        .accessDeniedHandler(new AccessDeniedHandlers())
+                )
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults()); // xác thực bằng http basic
         return http.build();
 
