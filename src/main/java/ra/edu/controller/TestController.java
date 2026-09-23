@@ -1,12 +1,17 @@
 package ra.edu.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ra.edu.config.jwt.JwtService;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class TestController {
+    private final JwtService jwtService;
 
     @GetMapping("/admin/test") // quyền ADMIN
     public String testAdmin() {
@@ -26,4 +31,19 @@ public class TestController {
     public String testDemo() {
         return "Hello, Demo!";
     }
+
+    @GetMapping("/jwt/create")
+    public String createJwt(@RequestParam String username) {
+        return jwtService.generateToken(username);
+    }
+    @GetMapping("/jwt/validate")
+    public boolean validateToken(@RequestParam String token) {
+        return jwtService.validateToken(token);
+    }
+     @GetMapping("/jwt/parser")
+    public String parserToken(@RequestParam String token) {
+        return jwtService.extractUsername(token);
+    }
+
+
 }

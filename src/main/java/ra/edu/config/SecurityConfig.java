@@ -47,6 +47,8 @@ public class SecurityConfig {
     private final UserDetailsServiceCustom userDetailsServiceCustom;
 
     // Phân quyền các nguoi dùng theo đường dẫn
+
+    // Request -> Filter1 -> Sercurity ....-> filtern -> Controller
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // tắt xác thực csrf
@@ -57,6 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/api/public/**").permitAll() // công khai , không cần xác thực
                                 .requestMatchers("/api/auth/**").permitAll() // công khai , không cần xác thực
+                                .requestMatchers("/api/jwt/**").permitAll() // công khai , không cần xác thực
                                 .anyRequest().authenticated() // cần phaải xác thực
                         )
                 .httpBasic(Customizer.withDefaults()); // xác thực bằng http basic
